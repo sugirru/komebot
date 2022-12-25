@@ -1,0 +1,20 @@
+{
+  "name": "komebot",
+  "version": "1.0.0",
+  "description": "helper discord bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "discord"
+  ],
+  "author": "sugiru",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.7.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.30.0"
+  }
+}
