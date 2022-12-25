@@ -12,7 +12,9 @@
   "author": "sugiru",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^14.7.1"
+    "discord.js": "^14.7.1",
+    "nice-color-palettes": "^3.0.0",
+    "pngjs": "^6.0.0"
   },
   "devDependencies": {
     "eslint": "^8.30.0"
