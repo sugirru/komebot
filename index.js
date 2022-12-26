@@ -23,31 +23,30 @@ const sequelize = new Sequelize('database', 'user', 'password', {
 });
 
 // Create model for sequelize database
-/*
- * equivalent to: CREATE TABLE tags(
- * name VARCHAR(255) UNIQUE,
- * description TEXT,
- * username VARCHAR(255),
- * usage_count  INT NOT NULL DEFAULT 0
- * );
- */
-const Tags = sequelize.define('tags', {
+const Todos = sequelize.define('todos', {
+    userid: Sequelize.STRING,
     name: {
         type: Sequelize.STRING,
-        unique: true,
+        allowNull: false,
     },
     description: Sequelize.TEXT,
-    username: Sequelize.STRING,
-    usage_count: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0,
-        allowNull: false,
+    completed: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+    },
+    deadline: {
+        type: Sequelize.DATE,
+        allowNull: true,
+    },
+    reminders: {
+        type: Sequelize.DATE,
+        allowNull: true,
     },
 });
 
 
 client.commands = new Collection();
-client.tags = Tags;
+client.todos = Todos;
 
 // Command Handler
 const commandsPath = path.join(__dirname, 'commands');
