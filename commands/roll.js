@@ -7,7 +7,7 @@ module.exports = {
         .addIntegerOption(option =>
             option
                 .setName('range')
-                .setDescription('Random number will be within 0 to specified range')
+                .setDescription('Random number will be within 1 to specified range')
                 .setMinValue(1)),
     async execute(interaction) {
         const min = 1;
