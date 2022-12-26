@@ -5,7 +5,7 @@ module.exports = {
     once: true,
     execute(client) {
 
-        client.tags.sync();
+        client.todos.sync();
         console.log(`Ready! Logged in as ${client.user.tag}`);
     },
 };
