@@ -3,6 +3,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 // Require the necessary discord.js classes
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
+// Require Sequelize
+const Sequelize = require('sequelize');
 const { token } = require('./config.json');
 // Other helper functions
 const { createPaletteImage } = require('./utils/generate-palette.js');
@@ -10,7 +12,42 @@ const { createPaletteImage } = require('./utils/generate-palette.js');
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
+
+// Define connection information for Sequelize
+const sequelize = new Sequelize('database', 'user', 'password', {
+    host: 'localhost',
+    dialect: 'sqlite',
+    logging: false,
+    // SQLite only
+    storage: 'database.sqlite',
+});
+
+// Create model for sequelize database
+/*
+ * equivalent to: CREATE TABLE tags(
+ * name VARCHAR(255) UNIQUE,
+ * description TEXT,
+ * username VARCHAR(255),
+ * usage_count  INT NOT NULL DEFAULT 0
+ * );
+ */
+const Tags = sequelize.define('tags', {
+    name: {
+        type: Sequelize.STRING,
+        unique: true,
+    },
+    description: Sequelize.TEXT,
+    username: Sequelize.STRING,
+    usage_count: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+        allowNull: false,
+    },
+});
+
+
 client.commands = new Collection();
+client.tags = Tags;
 
 // Command Handler
 const commandsPath = path.join(__dirname, 'commands');
@@ -46,3 +83,5 @@ createPaletteImage();
 
 // Log in to Discord with your client's token
 client.login(token);
+
+// module.exports = { Tags };
