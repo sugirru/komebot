@@ -35,20 +35,20 @@ module.exports = {
                     });
                 } catch (error) {
                     if (error.name === 'SequelizeUniqueConstraintError') {
-                        await interaction.reply('That todo already exists.');
+                        await interaction.reply({ content: 'That todo already exists.', ephemeral: true });
                         setTimeout(() => interaction.deleteReply(), 5000);
                     } else {
-                        await interaction.reply('Something went wrong with adding a todo.');
+                        await interaction.reply({ content: 'Something went wrong with adding a todo.', ephemeral: true });
                         setTimeout(() => interaction.deleteReply(), 5000);
                     }
                 }
-
-                await interaction.reply('Succesfully added todo!');
-                setTimeout(() => interaction.deleteReply(), 5000);
-            } else {
-                await interaction.reply('Something went wrong when adding the todo.');
+                await interaction.reply({ content: 'Succesfully added todo!', ephemeral: true });
                 setTimeout(() => interaction.deleteReply(), 5000);
             }
+            // } else {
+            //     await interaction.reply('Something went wrong when adding the todo.');
+            //     setTimeout(() => interaction.deleteReply(), 5000);
+            // }
         }
     },
 };

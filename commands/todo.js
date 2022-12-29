@@ -1,54 +1,90 @@
-const { SlashCommandBuilder, ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('todo')
-        .setDescription('Show todo list')
+        .setDescription('Todo manager')
         .addSubcommand(subcommand =>
             subcommand
-                .setName('add')
-                .setDescription('Add a new todo'))
+                .setName('options')
+                .setDescription('See possible actions'))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('list')
                 .setDescription('List existing todos')),
     async execute(interaction) {
-        const Todos = interaction.client.todos;
+        // const Todos = interaction.client.todos;
 
-        if (interaction.options._subcommand === 'add') {
-            // Create modal to be shown to user
-            const modal = new ModalBuilder()
-                .setCustomId('newTodoModal')
-                .setTitle('New Todo');
+        if (interaction.options._subcommand === 'options') {
+            const Buttons = new ActionRowBuilder()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId('newTodoButton')
+                        .setLabel('New Todo')
+                        .setStyle(ButtonStyle.Primary),
+                );
 
-            // Create inputs for the user
-            const nameInput = new TextInputBuilder()
-                .setCustomId('todoNameInput')
-                .setLabel('Todo Name')
-                .setStyle(TextInputStyle.Short);
-            const descriptionInput = new TextInputBuilder()
-                .setCustomId('todoDescriptionInput')
-                .setLabel('Todo Description (Optional)')
-                .setStyle(TextInputStyle.Short);
+            const message = await interaction.reply({ components: [Buttons], ephemeral: true });
+            const collector = await message.createMessageComponentCollector();
+            setTimeout(() => interaction.deleteReply(), 10000);
 
-            // Create Action Rows for the inputs
-            const firstActionRow = new ActionRowBuilder().addComponents(nameInput);
-            const secondActionRow = new ActionRowBuilder().addComponents(descriptionInput);
+            collector.on('collect', async i => {
+                if (i.customId === 'newTodoButton') {
+                    // Create modal to be shown to user
+                    const modal = new ModalBuilder()
+                        .setCustomId('newTodoModal')
+                        .setTitle('New Todo');
 
-            // Add all inputs to modal
-            modal.addComponents(firstActionRow, secondActionRow);
+                    // Create inputs for the user
+                    const nameInput = new TextInputBuilder()
+                        .setCustomId('todoNameInput')
+                        .setLabel('Todo Name')
+                        .setStyle(TextInputStyle.Short);
+                    const descriptionInput = new TextInputBuilder()
+                        .setCustomId('todoDescriptionInput')
+                        .setLabel('Todo Description (Optional)')
+                        .setStyle(TextInputStyle.Short);
 
-            // Show the modal to the user
-            await interaction.showModal(modal);
+                    // Create Action Rows for the inputs
+                    const firstActionRow = new ActionRowBuilder().addComponents(nameInput);
+                    const secondActionRow = new ActionRowBuilder().addComponents(descriptionInput);
 
-            // 5 minute timeout for command
-            // Workaround as there is currently no way to determine if user cancelled modal
-            setTimeout(() => interaction.deleteReply(), 300000);
+                    // Add all inputs to modal
+                    modal.addComponents(firstActionRow, secondActionRow);
+
+                    // Show the modal to the user
+                    await i.showModal(modal);
+
+                    // // 5 minute timeout for command
+                    // // Workaround as there is currently no way to determine if user cancelled modal
+                    // setTimeout(() => interaction.deleteReply(), 10000);
+                }
+            });
         } else if (interaction.options._subcommand === 'list') {
-            const todosList = await Todos.findAll({ where: { userid: interaction.user.id } });
-            console.log(JSON.stringify(todosList, null, 2)); // DEBUG
-            await interaction.reply('list'); // PLACEHOLDER
-            setTimeout(() => interaction.deleteReply(), 5000);
+            const Embed = new EmbedBuilder()
+                .setColor(0x0099FF)
+                .setTitle('Todos')
+                .addFields({ name: 'field', value: 'test' });
+
+            const Row = new ActionRowBuilder()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId('button')
+                        .setLabel('Button')
+                        .setStyle(ButtonStyle.Primary),
+                );
+
+            // await interaction.reply({ embeds: [Embed], components: [Row], ephemeral: true });
+            const message = await interaction.reply({ embeds: [Embed], components: [Row], ephemeral: true });
+            const collector = await message.createMessageComponentCollector();
+            setTimeout(() => interaction.deleteReply(), 10000);
+
+            collector.on('collect', async i => {
+                if (i.customId === 'button') {
+                    await i.update('pressed button');
+                }
+            });
         }
+
     },
 };
