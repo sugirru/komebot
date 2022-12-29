@@ -4,19 +4,40 @@ const { createPaletteImage } = require('../utils/generate-palette.js');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('palette')
-        .setDescription('Display a random color palette'),
+        .setDescription('Display a random color palette')
+        .addIntegerOption(option =>
+            option
+                .setName('number')
+                .setDescription('Amount of colors to include (defaults to 5)')
+                .setMinValue(1)
+                .setMaxValue(5)),
     async execute(interaction) {
-        const attachedFile = new AttachmentBuilder('./images/out.png');
+        const paletteSize = interaction.options.getInteger('number') ?? 5;
+        const image = 'out' + (paletteSize - 1).toString() + '.png';
+        const numWords = ['One', 'Two', 'Three', 'Four', 'Five'];
+        const num = numWords[paletteSize - 1];
+
+
+        const attachedFile = new AttachmentBuilder('./images/' + image);
         const hexValues = require('../images/hexValues.json');
+
+        console.log(hexValues);
+        let hexToShow = '';
+        for (let i = 0; i < paletteSize; i++) {
+            hexToShow = hexToShow.concat(hexValues.hex[i]);
+            hexToShow = hexToShow.concat('\t');
+        }
+        console.log(paletteSize);
+        console.log(hexToShow);
 
         // Create embed to send
         const paletteEmbed = new EmbedBuilder()
             .setColor(0x0099FF)
-            .setTitle('Five Color Palette')
+            .setTitle(num + ' Color Palette')
             .addFields(
-                { name: 'Hex Values', value: hexValues.hex[0] + '\t' + hexValues.hex[1] + '\t' + hexValues.hex[2] + '\t' + hexValues.hex[3] + '\t' + hexValues.hex[4] + '\t', inline: true },
+                { name: 'Hex Values', value: hexToShow, inline: true },
             )
-            .setImage('attachment://out.png');
+            .setImage('attachment://' + image);
 
         await interaction.reply({ embeds: [paletteEmbed], files: [attachedFile] });
 

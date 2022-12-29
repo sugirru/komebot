@@ -3,7 +3,7 @@ const { SlashCommandBuilder, ModalBuilder, ActionRowBuilder, TextInputBuilder, T
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('todo')
-        .setDescription('Use todo list')
+        .setDescription('Show todo list')
         .addSubcommand(subcommand =>
             subcommand
                 .setName('add')
@@ -40,6 +40,10 @@ module.exports = {
 
             // Show the modal to the user
             await interaction.showModal(modal);
+
+            // 5 minute timeout for command
+            // Workaround as there is currently no way to determine if user cancelled modal
+            setTimeout(() => interaction.deleteReply(), 300000);
         } else if (interaction.options._subcommand === 'list') {
             const todosList = await Todos.findAll({ where: { userid: interaction.user.id } });
             console.log(JSON.stringify(todosList, null, 2)); // DEBUG
