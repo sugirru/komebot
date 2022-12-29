@@ -52,7 +52,7 @@ function createPaletteImage() {
     let xMax = 100;
 
     const hexColors = colorsArray[randomIntFromInterval(0, colorsArray.length - 1)];
-    // let currentSquare = 0;
+    fs.writeFileSync('./images/hexValues.txt', hexColors.toString());
 
     for (let square = 0; square < 5; square++) {
         for (let y = 0; y < png5.height; y++) {
@@ -86,10 +86,6 @@ function createPaletteImage() {
         const outputLocation = './images/out' + i.toString() + '.png';
         pngs[i].pack().pipe(fs.createWriteStream(outputLocation));
     }
-
-    const values = { 'hex': hexColors };
-
-    fs.writeFileSync('./images/hexValues.json', JSON.stringify(values));
 }
 
 module.exports = { createPaletteImage };

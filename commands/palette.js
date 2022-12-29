@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const { createPaletteImage } = require('../utils/generate-palette.js');
+const fs = require('node:fs');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -19,23 +20,20 @@ module.exports = {
 
 
         const attachedFile = new AttachmentBuilder('./images/' + image);
-        const hexValues = require('../images/hexValues.json');
-
-        console.log(hexValues);
-        let hexToShow = '';
+        const hexValues = fs.readFileSync('./images/hexValues.txt', 'utf-8');
+        const hexToShow = hexValues.split(',');
+        let hexString = '';
         for (let i = 0; i < paletteSize; i++) {
-            hexToShow = hexToShow.concat(hexValues.hex[i]);
-            hexToShow = hexToShow.concat('\t');
+            hexString = hexString.concat(hexToShow[i]);
+            hexString = hexString.concat('\t');
         }
-        console.log(paletteSize);
-        console.log(hexToShow);
 
         // Create embed to send
         const paletteEmbed = new EmbedBuilder()
             .setColor(0x0099FF)
             .setTitle(num + ' Color Palette')
             .addFields(
-                { name: 'Hex Values', value: hexToShow, inline: true },
+                { name: 'Hex Values', value: hexString, inline: true },
             )
             .setImage('attachment://' + image);
 
