@@ -13,7 +13,7 @@ module.exports = {
                 .setName('list')
                 .setDescription('List existing todos')),
     async execute(interaction) {
-        // const Todos = interaction.client.todos;
+        const Todos = interaction.client.todos;
 
         if (interaction.options._subcommand === 'options') {
             const Buttons = new ActionRowBuilder()
@@ -61,29 +61,87 @@ module.exports = {
                 }
             });
         } else if (interaction.options._subcommand === 'list') {
-            const Embed = new EmbedBuilder()
-                .setColor(0x0099FF)
-                .setTitle('Todos')
-                .addFields({ name: 'field', value: 'test' });
+            const TodoList = await Todos.findAll({ where: { userid: interaction.user.id } });
+            const userTodos = eval(JSON.stringify(TodoList));
 
-            const Row = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setCustomId('button')
-                        .setLabel('Button')
-                        .setStyle(ButtonStyle.Primary),
-                );
+            console.log(userTodos); // DEBUG
+
+            const embedArray = [];
+            let pageTodos = [];
+            let page = 1;
+            // let todoIndex = 0;
+            // let pageTodoAmount = 0;
+            for (const todo in userTodos) {
+                console.log(todo); // DEBUG
+                if (pageTodos.length < 4) {
+                    pageTodos.push(userTodos[todo]);
+                } else {
+                    let pageString = '';
+                    let todoNumber = 1;
+                    for (const pageTodo in pageTodos) {
+                        pageString = pageString.concat(todoNumber.toString() + '. '); // Todo Number
+                        pageString = pageString.concat(pageTodos[pageTodo].name + '\n\t'); // Todo Name
+                        pageString = pageString.concat(pageTodos[pageTodo].description + '\n'); // Todo Description
+                        todoNumber += 1;
+                    }
+
+                    embedArray.push(new EmbedBuilder()
+                        .setColor(0x0099FF)
+                        .setTitle('Todo List')
+                        .addFields({
+                            name: 'Page ' + page,
+                            value: pageString,
+                        }));
+
+                    pageTodos = [];
+                    page += 1;
+                }
+            }
+
+            // const Embed = new EmbedBuilder()
+            //     .setColor(0x0099FF)
+            //     .setTitle('Todos')
+            //     .addFields({ name: 'field', value: 'test' });
+
+            // const Row = new ActionRowBuilder()
+            //     .addComponents(
+            //         new ButtonBuilder()
+            //             .setCustomId('button')
+            //             .setLabel('Button')
+            //             .setStyle(ButtonStyle.Primary),
+            //     );
 
             // await interaction.reply({ embeds: [Embed], components: [Row], ephemeral: true });
-            const message = await interaction.reply({ embeds: [Embed], components: [Row], ephemeral: true });
-            const collector = await message.createMessageComponentCollector();
+            const message = await interaction.reply({ embeds: [embedArray[0]], ephemeral: true });
+            // const collector = await message.createMessageComponentCollector();
             setTimeout(() => interaction.deleteReply(), 10000);
 
-            collector.on('collect', async i => {
-                if (i.customId === 'button') {
-                    await i.update('pressed button');
-                }
-            });
+            // await message.react('👍')
+            //     .then(() => message.react('👎'));
+
+            // const filter = (reaction, user) => {
+            //     return ['👍', '👎'].includes(reaction.emoji.name) && user.id === interaction.user.id;
+            // };
+
+            // await message.awaitReactions({ filter, max: 1, time: 60000, errors: ['time'] })
+            //     .then(collected => {
+            //         const reaction = collected.first();
+
+            //         if (reaction.emoji.name === '👍') {
+            //             message.reply('You reacted with a thumbs up.');
+            //         } else {
+            //             message.reply('You reacted with a thumbs down.');
+            //         }
+            //     })
+            //     .catch(collected => {
+            //         message.reply('You reacted with neither a thumbs up, nor a thumbs down.');
+            //     });
+
+            // collector.on('collect', async i => {
+            //     if (i.customId === 'button') {
+            //         await i.update('pressed button');
+            //     }
+            // });
         }
 
     },
