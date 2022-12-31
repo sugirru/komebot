@@ -13,7 +13,7 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId('newTodoButton')
-                    .setLabel('New Todo')
+                    .setLabel('New Task')
                     .setStyle(ButtonStyle.Primary),
                 new ButtonBuilder()
                     .setCustomId('deleteAllTodos')
@@ -40,7 +40,7 @@ module.exports = {
 
                     embedArray.push(new EmbedBuilder()
                         .setColor(0x0099FF)
-                        .setTitle('Todo List')
+                        .setTitle('Task List')
                         .addFields(
                             { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
                             { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
@@ -59,14 +59,14 @@ module.exports = {
             if (todosOnPage === 1) {
                 embedArray.push(new EmbedBuilder()
                     .setColor(0x0099FF)
-                    .setTitle('Todo List')
+                    .setTitle('Task List')
                     .addFields(
                         { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
                     ));
             } else if (todosOnPage === 2) {
                 embedArray.push(new EmbedBuilder()
                     .setColor(0x0099FF)
-                    .setTitle('Todo List')
+                    .setTitle('Task List')
                     .addFields(
                         { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
                         { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
@@ -74,7 +74,7 @@ module.exports = {
             } else if (todosOnPage === 3) {
                 embedArray.push(new EmbedBuilder()
                     .setColor(0x0099FF)
-                    .setTitle('Todo List')
+                    .setTitle('Task List')
                     .addFields(
                         { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
                         { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
@@ -83,7 +83,7 @@ module.exports = {
             } else if (todosOnPage === 4) {
                 embedArray.push(new EmbedBuilder()
                     .setColor(0x0099FF)
-                    .setTitle('Todo List')
+                    .setTitle('Task List')
                     .addFields(
                         { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
                         { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
@@ -94,7 +94,7 @@ module.exports = {
         } else {
             embedArray.push(new EmbedBuilder()
                 .setColor(0x0099FF)
-                .setTitle('Todo List')
+                .setTitle('Task List')
                 .addFields({
                     name: 'EMPTY',
                     value: 'No tasks yet!',
@@ -112,16 +112,16 @@ module.exports = {
                 // Create modal to be shown to user
                 const modal = new ModalBuilder()
                     .setCustomId('newTodoModal')
-                    .setTitle('New Todo');
+                    .setTitle('New Task');
 
                 // Create inputs for the user
                 const nameInput = new TextInputBuilder()
                     .setCustomId('todoNameInput')
-                    .setLabel('Todo Name')
+                    .setLabel('Task Name')
                     .setStyle(TextInputStyle.Short);
                 const descriptionInput = new TextInputBuilder()
                     .setCustomId('todoDescriptionInput')
-                    .setLabel('Todo Description (Optional)')
+                    .setLabel('Task Description')
                     .setStyle(TextInputStyle.Short);
 
                 // Create Action Rows for the inputs
