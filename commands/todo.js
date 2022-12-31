@@ -15,6 +15,10 @@ module.exports = {
                     .setCustomId('newTodoButton')
                     .setLabel('New Todo')
                     .setStyle(ButtonStyle.Primary),
+                new ButtonBuilder()
+                    .setCustomId('deleteAllTodos')
+                    .setLabel('Delete All')
+                    .setStyle(ButtonStyle.Danger),
             );
 
         // START CREATING EMBEDS
@@ -22,66 +26,72 @@ module.exports = {
         const embedArray = [];
         if (TodoList.length != 0) {
             const userTodos = eval(JSON.stringify(TodoList));
-            console.log(userTodos); // DEBUG
 
             let pageTodos = [];
-            let page = 1;
-            let pageString = '';
             let todoNumber = 1;
             let todosOnPage = 0;
 
             // todo is a number in loop
             for (const todo in userTodos) {
-                console.log('here one'); // DEBUG
                 if (pageTodos.length < 4) {
                     pageTodos.push(userTodos[todo]);
                     todosOnPage += 1;
                 } else {
 
-                    for (const pageTodo in pageTodos) {
-                        pageString = pageString.concat(todoNumber.toString() + '. '); // Todo Number
-                        pageString = pageString.concat(pageTodos[pageTodo].name + '\n\t'); // Todo Name
-                        pageString = pageString.concat(pageTodos[pageTodo].description + '\n'); // Todo Description
-                        todoNumber += 1;
-                    }
-
                     embedArray.push(new EmbedBuilder()
                         .setColor(0x0099FF)
                         .setTitle('Todo List')
-                        .addFields({
-                            name: 'Page ' + page,
-                            value: pageString,
-                        }));
-
-                    pageString = '';
-                    todoNumber = 1;
+                        .addFields(
+                            { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
+                            { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
+                            { name: (todoNumber + 2).toString() + '. ' + pageTodos[2].name, value: pageTodos[2].description },
+                            { name: (todoNumber + 3).toString() + '. ' + pageTodos[3].name, value: pageTodos[3].description },
+                        ));
+                    todoNumber += 4;
                     todosOnPage = 0;
-
                     pageTodos = [];
-                    page += 1;
 
                 }
 
 
             }
             // Create final embed if there are still todos remaining after previous loop
-            if (todosOnPage < 4) {
-                for (const pageTodo in pageTodos) {
-                    pageString = pageString.concat(todoNumber.toString() + '. '); // Todo Number
-                    pageString = pageString.concat(pageTodos[pageTodo].name + '\n\t'); // Todo Name
-                    pageString = pageString.concat(pageTodos[pageTodo].description + '\n'); // Todo Description
-                    todoNumber += 1;
-                }
+            if (todosOnPage === 1) {
                 embedArray.push(new EmbedBuilder()
                     .setColor(0x0099FF)
                     .setTitle('Todo List')
-                    .addFields({
-                        name: 'Page ' + page,
-                        value: pageString,
-                    }));
+                    .addFields(
+                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
+                    ));
+            } else if (todosOnPage === 2) {
+                embedArray.push(new EmbedBuilder()
+                    .setColor(0x0099FF)
+                    .setTitle('Todo List')
+                    .addFields(
+                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
+                        { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
+                    ));
+            } else if (todosOnPage === 3) {
+                embedArray.push(new EmbedBuilder()
+                    .setColor(0x0099FF)
+                    .setTitle('Todo List')
+                    .addFields(
+                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
+                        { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
+                        { name: (todoNumber + 2).toString() + '. ' + pageTodos[2].name, value: pageTodos[2].description },
+                    ));
+            } else if (todosOnPage === 4) {
+                embedArray.push(new EmbedBuilder()
+                    .setColor(0x0099FF)
+                    .setTitle('Todo List')
+                    .addFields(
+                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
+                        { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
+                        { name: (todoNumber + 2).toString() + '. ' + pageTodos[2].name, value: pageTodos[2].description },
+                        { name: (todoNumber + 3).toString() + '. ' + pageTodos[3].name, value: pageTodos[3].description },
+                    ));
             }
         } else {
-            console.log('here two'); // DEBUG
             embedArray.push(new EmbedBuilder()
                 .setColor(0x0099FF)
                 .setTitle('Todo List')
@@ -123,6 +133,16 @@ module.exports = {
 
                 // Show the modal to the user
                 await i.showModal(modal);
+            } else if (i.customId === 'deleteAllTodos') {
+                const rowCount = await Todos.destroy({ where: { userid: i.user.id } });
+                // Check if there were todo rows to delete and reply with the appropriate message
+                if (!rowCount) {
+                    await i.reply({ content: 'No tasks to delete!', ephemeral: true });
+                    setTimeout(() => i.deleteReply(), 10000);
+                } else {
+                    await i.reply({ content: 'Deleted all tasks!', ephemeral: true });
+                    setTimeout(() => i.deleteReply(), 10000);
+                }
             }
         });
     },
