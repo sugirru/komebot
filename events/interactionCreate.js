@@ -24,8 +24,6 @@ module.exports = {
                 const todoName = interaction.fields.getTextInputValue('todoNameInput');
                 const todoDescription = interaction.fields.getTextInputValue('todoDescriptionInput');
 
-                console.log(interaction.user.id); // DEBUG
-
                 try {
                     await Todos.create({
                         userid: interaction.user.id,
