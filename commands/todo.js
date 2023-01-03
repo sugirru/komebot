@@ -8,9 +8,20 @@ module.exports = {
         // GET TODOS DATABASE
         const Todos = interaction.client.todos;
 
+        // Create variable to track current page
+        let page = 0;
+
         // CREATE BUTTONS BELOW EMBED
         const Buttons = new ActionRowBuilder()
             .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('prevPage')
+                    .setLabel('<')
+                    .setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder()
+                    .setCustomId('nextPage')
+                    .setLabel('>')
+                    .setStyle(ButtonStyle.Secondary),
                 new ButtonBuilder()
                     .setCustomId('newTodoButton')
                     .setLabel('New Task')
@@ -33,7 +44,7 @@ module.exports = {
 
             // todo is a number in loop
             for (const todo in userTodos) {
-                if (pageTodos.length < 4) {
+                if (pageTodos.length < 5) {
                     pageTodos.push(userTodos[todo]);
                     todosOnPage += 1;
                 } else {
@@ -46,8 +57,9 @@ module.exports = {
                             { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
                             { name: (todoNumber + 2).toString() + '. ' + pageTodos[2].name, value: pageTodos[2].description },
                             { name: (todoNumber + 3).toString() + '. ' + pageTodos[3].name, value: pageTodos[3].description },
+                            { name: (todoNumber + 4).toString() + '. ' + pageTodos[4].name, value: pageTodos[3].description },
                         ));
-                    todoNumber += 4;
+                    todoNumber += 5;
                     todosOnPage = 0;
                     pageTodos = [];
 
@@ -90,6 +102,17 @@ module.exports = {
                         { name: (todoNumber + 2).toString() + '. ' + pageTodos[2].name, value: pageTodos[2].description },
                         { name: (todoNumber + 3).toString() + '. ' + pageTodos[3].name, value: pageTodos[3].description },
                     ));
+            } else if (todosOnPage === 5) {
+                embedArray.push(new EmbedBuilder()
+                    .setColor(0x0099FF)
+                    .setTitle('Task List')
+                    .addFields(
+                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
+                        { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
+                        { name: (todoNumber + 2).toString() + '. ' + pageTodos[2].name, value: pageTodos[2].description },
+                        { name: (todoNumber + 3).toString() + '. ' + pageTodos[3].name, value: pageTodos[3].description },
+                        { name: (todoNumber + 4).toString() + '. ' + pageTodos[4].name, value: pageTodos[4].description },
+                    ));
             }
         } else {
             embedArray.push(new EmbedBuilder()
@@ -102,7 +125,7 @@ module.exports = {
         }
 
         // SEND MESSAGE
-        const message = await interaction.reply({ embeds: [embedArray[0]], components: [Buttons], ephemeral: true });
+        const message = await interaction.reply({ embeds: [embedArray[page]], components: [Buttons], ephemeral: true });
         const collector = await message.createMessageComponentCollector();
         setTimeout(() => interaction.deleteReply(), 10000);
 
@@ -142,6 +165,20 @@ module.exports = {
                 } else {
                     await i.reply({ content: 'Deleted all tasks!', ephemeral: true });
                     setTimeout(() => i.deleteReply(), 10000);
+                }
+            } else if (i.customId === 'prevPage') {
+                if (page > 0) {
+                    page -= 1;
+                    await i.update({ embeds: [embedArray[page]], components: [Buttons], ephemeral: true });
+                } else {
+                    await i.update({ embeds: [embedArray[page]], components: [Buttons], ephemeral: true });
+                }
+            } else if (i.customId === 'nextPage') {
+                if (page < embedArray.length) {
+                    page += 1;
+                    await i.update({ embeds: [embedArray[page]], components: [Buttons], ephemeral: true });
+                } else {
+                    await i.update({ embeds: [embedArray[page]], components: [Buttons], ephemeral: true });
                 }
             }
         });
