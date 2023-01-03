@@ -7,6 +7,8 @@ module.exports = {
     async execute(interaction) {
         // GET TODOS DATABASE
         const Todos = interaction.client.todos;
+        // EMOJIS FOR COMPLETION STATUS OF TASKS
+        const taskDone = ['🟥', '🟩'];
 
         // Create variable to track current page
         let page = 0;
@@ -34,9 +36,9 @@ module.exports = {
 
         // START CREATING EMBEDS
         const TodoList = await Todos.findAll({ where: { userid: interaction.user.id } });
+        const userTodos = eval(JSON.stringify(TodoList));
         const embedArray = [];
         if (TodoList.length != 0) {
-            const userTodos = eval(JSON.stringify(TodoList));
 
             let pageTodos = [];
             let todoNumber = 1;
@@ -45,19 +47,25 @@ module.exports = {
             // todo is a number in loop
             for (const todo in userTodos) {
                 if (pageTodos.length < 5) {
-                    pageTodos.push(userTodos[todo]);
+                    let taskStatus;
+                    if (userTodos[todo].completed) {
+                        taskStatus = taskDone[1];
+                    } else {
+                        taskStatus = taskDone[0];
+                    }
+                    pageTodos.push([userTodos[todo], taskStatus]);
                     todosOnPage += 1;
                 } else {
 
                     embedArray.push(new EmbedBuilder()
-                        .setColor(0x0099FF)
+                        .setColor(0xDFEBF2)
                         .setTitle('Task List')
                         .addFields(
-                            { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
-                            { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
-                            { name: (todoNumber + 2).toString() + '. ' + pageTodos[2].name, value: pageTodos[2].description },
-                            { name: (todoNumber + 3).toString() + '. ' + pageTodos[3].name, value: pageTodos[3].description },
-                            { name: (todoNumber + 4).toString() + '. ' + pageTodos[4].name, value: pageTodos[3].description },
+                            { name: (todoNumber + 0).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[0][0].name, value: pageTodos[0][0].description },
+                            { name: (todoNumber + 1).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[1][0].name, value: pageTodos[1][0].description },
+                            { name: (todoNumber + 2).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[2][0].name, value: pageTodos[2][0].description },
+                            { name: (todoNumber + 3).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[3][0].name, value: pageTodos[3][0].description },
+                            { name: (todoNumber + 4).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[4][0].name, value: pageTodos[3][0].description },
                         ));
                     todoNumber += 5;
                     todosOnPage = 0;
@@ -70,53 +78,53 @@ module.exports = {
             // Create final embed if there are still todos remaining after previous loop
             if (todosOnPage === 1) {
                 embedArray.push(new EmbedBuilder()
-                    .setColor(0x0099FF)
+                    .setColor(0xDFEBF2)
                     .setTitle('Task List')
                     .addFields(
-                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
+                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[0][0].name, value: pageTodos[0][0].description },
                     ));
             } else if (todosOnPage === 2) {
                 embedArray.push(new EmbedBuilder()
-                    .setColor(0x0099FF)
+                    .setColor(0xDFEBF2)
                     .setTitle('Task List')
                     .addFields(
-                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
-                        { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
+                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[0][0].name, value: pageTodos[0][0].description },
+                        { name: (todoNumber + 1).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[1][0].name, value: pageTodos[1][0].description },
                     ));
             } else if (todosOnPage === 3) {
                 embedArray.push(new EmbedBuilder()
-                    .setColor(0x0099FF)
+                    .setColor(0xDFEBF2)
                     .setTitle('Task List')
                     .addFields(
-                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
-                        { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
-                        { name: (todoNumber + 2).toString() + '. ' + pageTodos[2].name, value: pageTodos[2].description },
+                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[0][0].name, value: pageTodos[0][0].description },
+                        { name: (todoNumber + 1).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[1][0].name, value: pageTodos[1][0].description },
+                        { name: (todoNumber + 2).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[2][0].name, value: pageTodos[2][0].description },
                     ));
             } else if (todosOnPage === 4) {
                 embedArray.push(new EmbedBuilder()
-                    .setColor(0x0099FF)
+                    .setColor(0xDFEBF2)
                     .setTitle('Task List')
                     .addFields(
-                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
-                        { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
-                        { name: (todoNumber + 2).toString() + '. ' + pageTodos[2].name, value: pageTodos[2].description },
-                        { name: (todoNumber + 3).toString() + '. ' + pageTodos[3].name, value: pageTodos[3].description },
+                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[0][0].name, value: pageTodos[0][0].description },
+                        { name: (todoNumber + 1).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[1][0].name, value: pageTodos[1][0].description },
+                        { name: (todoNumber + 2).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[2][0].name, value: pageTodos[2][0].description },
+                        { name: (todoNumber + 3).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[3][0].name, value: pageTodos[3][0].description },
                     ));
             } else if (todosOnPage === 5) {
                 embedArray.push(new EmbedBuilder()
-                    .setColor(0x0099FF)
+                    .setColor(0xDFEBF2)
                     .setTitle('Task List')
                     .addFields(
-                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0].name, value: pageTodos[0].description },
-                        { name: (todoNumber + 1).toString() + '. ' + pageTodos[1].name, value: pageTodos[1].description },
-                        { name: (todoNumber + 2).toString() + '. ' + pageTodos[2].name, value: pageTodos[2].description },
-                        { name: (todoNumber + 3).toString() + '. ' + pageTodos[3].name, value: pageTodos[3].description },
-                        { name: (todoNumber + 4).toString() + '. ' + pageTodos[4].name, value: pageTodos[4].description },
+                        { name: (todoNumber + 0).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[0][0].name, value: pageTodos[0][0].description },
+                        { name: (todoNumber + 1).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[1][0].name, value: pageTodos[1][0].description },
+                        { name: (todoNumber + 2).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[2][0].name, value: pageTodos[2][0].description },
+                        { name: (todoNumber + 3).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[3][0].name, value: pageTodos[3][0].description },
+                        { name: (todoNumber + 4).toString() + '. ' + pageTodos[0][1] + ' ' + pageTodos[4][0].name, value: pageTodos[4][0].description },
                     ));
             }
         } else {
             embedArray.push(new EmbedBuilder()
-                .setColor(0x0099FF)
+                .setColor(0xDFEBF2)
                 .setTitle('Task List')
                 .addFields({
                     name: 'EMPTY',
@@ -127,7 +135,7 @@ module.exports = {
         // SEND MESSAGE
         const message = await interaction.reply({ embeds: [embedArray[page]], components: [Buttons], ephemeral: true });
         const collector = await message.createMessageComponentCollector();
-        setTimeout(() => interaction.deleteReply(), 10000);
+        setTimeout(() => interaction.deleteReply(), 60000);
 
         // COLLECTOR FOR BUTTONS COMPONENT IN MESSAGE
         collector.on('collect', async i => {
