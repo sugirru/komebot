@@ -140,16 +140,17 @@ module.exports = {
                 // Create inputs for the user
                 const nameInput = new TextInputBuilder()
                     .setCustomId('todoNameInput')
-                    .setLabel('Task Name')
-                    .setStyle(TextInputStyle.Short);
+                    .setLabel('Header')
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false);
                 const descriptionInput = new TextInputBuilder()
                     .setCustomId('todoDescriptionInput')
-                    .setLabel('Task Description')
+                    .setLabel('Task')
                     .setStyle(TextInputStyle.Short);
 
                 // Create Action Rows for the inputs
-                const firstActionRow = new ActionRowBuilder().addComponents(nameInput);
-                const secondActionRow = new ActionRowBuilder().addComponents(descriptionInput);
+                const firstActionRow = new ActionRowBuilder().addComponents(descriptionInput);
+                const secondActionRow = new ActionRowBuilder().addComponents(nameInput);
 
                 // Add all inputs to modal
                 modal.addComponents(firstActionRow, secondActionRow);
