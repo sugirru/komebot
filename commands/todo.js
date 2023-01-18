@@ -100,7 +100,7 @@ module.exports = {
                     await i.update({ embeds: [embedArray[page]], components: [Buttons1, Buttons2], ephemeral: true });
                 }
             } else if (i.customId === 'nextPage') {
-                if (page < embedArray.length) {
+                if (page < embedArray.length - 1) {
                     page += 1;
                     await i.update({ embeds: [embedArray[page]], components: [Buttons1, Buttons2], ephemeral: true });
                 } else {
