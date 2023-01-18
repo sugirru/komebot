@@ -30,12 +30,19 @@ function generateEmbeds(TodoList, userTodos) {
                         { name: (todoNumber + 1).toString() + '. ' + pageTodos[1][1] + ' ' + pageTodos[1][0].name, value: pageTodos[1][0].description },
                         { name: (todoNumber + 2).toString() + '. ' + pageTodos[2][1] + ' ' + pageTodos[2][0].name, value: pageTodos[2][0].description },
                         { name: (todoNumber + 3).toString() + '. ' + pageTodos[3][1] + ' ' + pageTodos[3][0].name, value: pageTodos[3][0].description },
-                        { name: (todoNumber + 4).toString() + '. ' + pageTodos[4][1] + ' ' + pageTodos[4][0].name, value: pageTodos[3][0].description },
+                        { name: (todoNumber + 4).toString() + '. ' + pageTodos[4][1] + ' ' + pageTodos[4][0].name, value: pageTodos[4][0].description },
                     ));
+
                 todoNumber += 5;
                 todosOnPage = 0;
                 pageTodos = [];
 
+                if (userTodos[todo].completed) {
+                    pageTodos.push([userTodos[todo], taskDone[1]]);
+                } else {
+                    pageTodos.push([userTodos[todo], taskDone[0]]);
+                }
+                todosOnPage += 1;
             }
 
 
