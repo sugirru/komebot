@@ -34,14 +34,14 @@ module.exports = {
                 } catch (error) {
                     if (error.name === 'SequelizeUniqueConstraintError') {
                         await interaction.reply({ content: 'That task already exists.', ephemeral: true });
-                        setTimeout(() => interaction.deleteReply(), 5000);
+                        setTimeout(() => interaction.deleteReply(), 1000);
                     } else {
                         await interaction.reply({ content: 'Something went wrong with adding a task.', ephemeral: true });
-                        setTimeout(() => interaction.deleteReply(), 5000);
+                        setTimeout(() => interaction.deleteReply(), 1000);
                     }
                 }
                 await interaction.reply({ content: 'Succesfully added todo!', ephemeral: true });
-                setTimeout(() => interaction.deleteReply(), 5000);
+                setTimeout(() => interaction.deleteReply(), 1000);
             } else if (interaction.customId === 'deleteTodoModal') {
                 const Todos = interaction.client.todos;
 
@@ -60,7 +60,7 @@ module.exports = {
                         succesful = false;
 
                         await interaction.reply({ content: 'Something went wrong!', ephemeral: true });
-                        setTimeout(() => interaction.deleteReply(), 5000);
+                        setTimeout(() => interaction.deleteReply(), 1000);
 
                         break;
                     }
@@ -68,7 +68,7 @@ module.exports = {
 
                 if (succesful) {
                     await interaction.reply({ content: 'Succesful deletion!', ephemeral: true });
-                    setTimeout(() => interaction.deleteReply(), 5000);
+                    setTimeout(() => interaction.deleteReply(), 1000);
                 }
             } else if (interaction.customId === 'toggleTodoModal') {
 
@@ -92,7 +92,7 @@ module.exports = {
                         succesful = false;
 
                         await interaction.reply({ content: 'Something went wrong!', ephemeral: true });
-                        setTimeout(() => interaction.deleteReply(), 5000);
+                        setTimeout(() => interaction.deleteReply(), 1000);
 
                         break;
                     }
@@ -100,7 +100,7 @@ module.exports = {
 
                 if (succesful) {
                     await interaction.reply({ content: 'Toggled tasks!', ephemeral: true });
-                    setTimeout(() => interaction.deleteReply(), 5000);
+                    setTimeout(() => interaction.deleteReply(), 1000);
                 }
             }
         }
