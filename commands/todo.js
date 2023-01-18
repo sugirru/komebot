@@ -23,6 +23,10 @@ module.exports = {
                     .setCustomId('nextPage')
                     .setLabel('>')
                     .setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder()
+                    .setCustomId('refreshEmbed')
+                    .setLabel('Refresh')
+                    .setStyle(ButtonStyle.Success),
             );
         const Buttons2 = new ActionRowBuilder()
             .addComponents(
@@ -45,9 +49,9 @@ module.exports = {
             );
 
         // START CREATING EMBEDS
-        const TodoList = await Todos.findAll({ where: { userid: interaction.user.id } });
-        const userTodos = eval(JSON.stringify(TodoList));
-        const embedArray = generateEmbeds(TodoList, userTodos);
+        let TodoList = await Todos.findAll({ where: { userid: interaction.user.id } });
+        let userTodos = eval(JSON.stringify(TodoList));
+        let embedArray = generateEmbeds(TodoList, userTodos);
 
         // SEND MESSAGE
         const message = await interaction.reply({ embeds: [embedArray[page]], components: [Buttons1, Buttons2], ephemeral: true });
@@ -142,6 +146,14 @@ module.exports = {
 
                 // Show the modal to the user
                 await i.showModal(modal);
+            } else if (i.customId === 'refreshEmbed') {
+                TodoList = await Todos.findAll({ where: { userid: interaction.user.id } });
+                userTodos = eval(JSON.stringify(TodoList));
+                embedArray = generateEmbeds(TodoList, userTodos);
+
+                page = 0;
+
+                await i.update({ embeds: [embedArray[page]], components: [Buttons1, Buttons2], ephemeral: true });
             }
         });
     },

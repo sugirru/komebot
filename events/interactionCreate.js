@@ -33,10 +33,10 @@ module.exports = {
                     });
                 } catch (error) {
                     if (error.name === 'SequelizeUniqueConstraintError') {
-                        await interaction.reply({ content: 'That todo already exists.', ephemeral: true });
+                        await interaction.reply({ content: 'That task already exists.', ephemeral: true });
                         setTimeout(() => interaction.deleteReply(), 5000);
                     } else {
-                        await interaction.reply({ content: 'Something went wrong with adding a todo.', ephemeral: true });
+                        await interaction.reply({ content: 'Something went wrong with adding a task.', ephemeral: true });
                         setTimeout(() => interaction.deleteReply(), 5000);
                     }
                 }
@@ -51,44 +51,58 @@ module.exports = {
                 const TodoList = await Todos.findAll({ where: { userid: interaction.user.id } });
                 const userTodos = eval(JSON.stringify(TodoList));
 
-                try {
-                    for (let i = 0; i < deleteList.length; i++) {
+                let succesful = true;
+                for (let i = 0; i < deleteList.length; i++) {
+                    try {
                         await Todos.destroy({ where: { description: userTodos[deleteList[i] - 1].description } });
+                    } catch (error) {
+                        console.log(error);
+                        succesful = false;
+
+                        await interaction.reply({ content: 'Something went wrong!', ephemeral: true });
+                        setTimeout(() => interaction.deleteReply(), 5000);
+
+                        break;
                     }
-                } catch (error) {
-                    console.log(error);
-                    await interaction.reply({ content: 'Something went wrong!', ephemeral: true });
-                    setTimeout(() => interaction.deleteReply(), 5000);
                 }
 
-                await interaction.reply({ content: 'Succesful deletion!', ephemeral: true });
-                setTimeout(() => interaction.deleteReply(), 5000);
+                if (succesful) {
+                    await interaction.reply({ content: 'Succesful deletion!', ephemeral: true });
+                    setTimeout(() => interaction.deleteReply(), 5000);
+                }
             } else if (interaction.customId === 'toggleTodoModal') {
+
+
                 const Todos = interaction.client.todos;
 
                 const todosToToggle = interaction.fields.getTextInputValue('todosToToggle');
                 const toggleList = todosToToggle.split(',');
+                console.log(toggleList);
 
                 const TodoList = await Todos.findAll({ where: { userid: interaction.user.id } });
                 const userTodos = eval(JSON.stringify(TodoList));
+                console.log(userTodos);
 
-                try {
-                    for (let i = 0; i < toggleList.length; i++) {
+                let succesful = true;
+                for (let i = 0; i < toggleList.length; i++) {
+                    try {
                         await Todos.update({ completed: !userTodos[toggleList[i] - 1].completed }, { where: { description: userTodos[toggleList[i] - 1].description } });
+                    } catch (error) {
+                        console.log(error);
+                        succesful = false;
+
+                        await interaction.reply({ content: 'Something went wrong!', ephemeral: true });
+                        setTimeout(() => interaction.deleteReply(), 5000);
+
+                        break;
                     }
-                } catch (error) {
-                    console.log(error);
-                    await interaction.reply({ content: 'Something went wrong!', ephemeral: true });
-                    setTimeout(() => interaction.deleteReply(), 5000);
                 }
 
-                await interaction.reply({ content: 'Toggled tasks!', ephemeral: true });
-                setTimeout(() => interaction.deleteReply(), 5000);
+                if (succesful) {
+                    await interaction.reply({ content: 'Toggled tasks!', ephemeral: true });
+                    setTimeout(() => interaction.deleteReply(), 5000);
+                }
             }
-            // } else {
-            //     await interaction.reply('Something went wrong when adding the todo.');
-            //     setTimeout(() => interaction.deleteReply(), 5000);
-            // }
         }
     },
 };
