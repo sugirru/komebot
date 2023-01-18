@@ -106,6 +106,24 @@ module.exports = {
                 } else {
                     await i.update({ embeds: [embedArray[page]], components: [Buttons1, Buttons2], ephemeral: true });
                 }
+            } else if (i.customId === 'deleteTodos') {
+                // Create modal to be shown to user
+                const modal = new ModalBuilder()
+                    .setCustomId('deleteTodoModal')
+                    .setTitle('Delete Tasks');
+
+                // Create input for the user
+                const deleteInput = new TextInputBuilder()
+                    .setCustomId('todosToDelete')
+                    .setLabel('Comma separated (e.g. "1,4,5")')
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false);
+
+                const actionRow = new ActionRowBuilder().addComponents(deleteInput);
+                modal.addComponents(actionRow);
+
+                // Show the modal to the user
+                await i.showModal(modal);
             }
         });
     },

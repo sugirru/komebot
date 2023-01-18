@@ -42,6 +42,27 @@ module.exports = {
                 }
                 await interaction.reply({ content: 'Succesfully added todo!', ephemeral: true });
                 setTimeout(() => interaction.deleteReply(), 5000);
+            } else if (interaction.customId === 'deleteTodoModal') {
+                const Todos = interaction.client.todos;
+
+                const todosToDelete = interaction.fields.getTextInputValue('todosToDelete');
+                const deleteList = todosToDelete.split(',');
+
+                const TodoList = await Todos.findAll({ where: { userid: interaction.user.id } });
+                const userTodos = eval(JSON.stringify(TodoList));
+
+                try {
+                    for (let i = 0; i < deleteList.length; i++) {
+                        await Todos.destroy({ where: { description: userTodos[deleteList[i] - 1].description } });
+                    }
+                } catch (error) {
+                    console.log(error);
+                    await interaction.reply({ content: 'Something went wrong!', ephemeral: true });
+                    setTimeout(() => interaction.deleteReply(), 5000);
+                }
+
+                await interaction.reply({ content: 'Succesful deletion!', ephemeral: true });
+                setTimeout(() => interaction.deleteReply(), 5000);
             }
             // } else {
             //     await interaction.reply('Something went wrong when adding the todo.');
