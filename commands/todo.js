@@ -124,6 +124,24 @@ module.exports = {
 
                 // Show the modal to the user
                 await i.showModal(modal);
+            } else if (i.customId === 'toggleTodos') {
+                // Create modal to be shown to user
+                const modal = new ModalBuilder()
+                    .setCustomId('toggleTodoModal')
+                    .setTitle('Toggle Tasks');
+
+                // Create input for the user
+                const toggleInput = new TextInputBuilder()
+                    .setCustomId('todosToToggle')
+                    .setLabel('Comma separated (e.g. "1,4,5")')
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false);
+
+                const actionRow = new ActionRowBuilder().addComponents(toggleInput);
+                modal.addComponents(actionRow);
+
+                // Show the modal to the user
+                await i.showModal(modal);
             }
         });
     },

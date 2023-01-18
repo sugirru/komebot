@@ -63,6 +63,27 @@ module.exports = {
 
                 await interaction.reply({ content: 'Succesful deletion!', ephemeral: true });
                 setTimeout(() => interaction.deleteReply(), 5000);
+            } else if (interaction.customId === 'toggleTodoModal') {
+                const Todos = interaction.client.todos;
+
+                const todosToToggle = interaction.fields.getTextInputValue('todosToToggle');
+                const toggleList = todosToToggle.split(',');
+
+                const TodoList = await Todos.findAll({ where: { userid: interaction.user.id } });
+                const userTodos = eval(JSON.stringify(TodoList));
+
+                try {
+                    for (let i = 0; i < toggleList.length; i++) {
+                        await Todos.update({ completed: !userTodos[toggleList[i] - 1].completed }, { where: { description: userTodos[toggleList[i] - 1].description } });
+                    }
+                } catch (error) {
+                    console.log(error);
+                    await interaction.reply({ content: 'Something went wrong!', ephemeral: true });
+                    setTimeout(() => interaction.deleteReply(), 5000);
+                }
+
+                await interaction.reply({ content: 'Toggled tasks!', ephemeral: true });
+                setTimeout(() => interaction.deleteReply(), 5000);
             }
             // } else {
             //     await interaction.reply('Something went wrong when adding the todo.');
